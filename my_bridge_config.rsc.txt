@@ -1,0 +1,37 @@
+# 2025-12-03 13:10:17 by RouterOS 7.20.6
+# software id = ELHR-FXHG
+#
+# model = C52iG-5HaxD2HaxD
+# serial number = HGR0ABDX329
+/interface bridge
+add admin-mac=F4:1E:57:04:5F:38 auto-mac=no name=bridge-defcorp
+/interface wifi security
+add disabled=no name=defcorp-security
+/interface wifi configuration
+add country=Canada disabled=no mode=station-pseudobridge name=\
+    defcorp-configuration security=defcorp-security ssid=defcorp
+/interface wifi
+set [ find default-name=wifi2 ] configuration=defcorp-configuration \
+    configuration.mode=station .ssid=defcorp name=wifi2g
+set [ find default-name=wifi1 ] configuration=defcorp-configuration \
+    configuration.mode=station-pseudobridge disabled=no name=wifi5g
+/interface bridge port
+add bridge=bridge-defcorp interface=ether4
+add bridge=bridge-defcorp interface=wifi2g
+add bridge=bridge-defcorp interface=ether2
+add bridge=bridge-defcorp interface=ether3
+add bridge=bridge-defcorp interface=ether5
+add bridge=bridge-defcorp interface=ether1
+add bridge=bridge-defcorp interface=wifi5g
+/ip neighbor discovery-settings
+set discover-interface-list=!dynamic
+/ip address
+add address=192.168.2.34/24 disabled=yes interface=bridge-defcorp network=\
+    192.168.2.0
+/ip dhcp-client
+# Interface not active
+add interface=wifi2g
+# DHCP client can not run on slave or passthrough interface!
+add interface=wifi5g
+/system routerboard settings
+set auto-upgrade=yes
